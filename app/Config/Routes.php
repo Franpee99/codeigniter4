@@ -12,7 +12,8 @@ $routes->group('dashboard', function($routes){
     //Accede al controlador directamente -> php spark routes (para ver las rutas)
     //$routes->presenter('pelicula', ['controller' => 'Dashboard\Pelicula']);
     // $routes->presenter('categoria', ['only' => ['index', 'new', 'create']]);
-    $routes->presenter('categoria', ['except' => ['show'], 'controller' => 'Dashboard\Categoria']);
+    // $routes->presenter('categoria', ['except' => ['show'], 'controller' => 'Dashboard\Categoria']);
+    $routes->presenter('categoria', ['controller' => 'Dashboard\Categoria']);
 });
 
 $routes->group('dashboard', function($routes){
