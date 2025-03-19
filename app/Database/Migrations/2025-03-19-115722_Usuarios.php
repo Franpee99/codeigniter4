@@ -30,7 +30,7 @@ class Usuarios extends Migration
                 'constraint' => 255,
                 'unique' => true,
             ],
-            'contrasena' => [
+            'tipo' => [
                 'type' => 'ENUM',
                 'constraint' => ['admin', 'regular'],
                 'default' => 'regular',

@@ -12,4 +12,13 @@ class UsuarioModel extends Model
 
     protected $allowedFields    = ['usuario', 'email', 'contrasena'];
 
+    //Encriptar la contraseña
+    public function contrasenaHash($contrasenaHash){
+        return password_hash($contrasenaHash, PASSWORD_DEFAULT);
+    }
+
+    //Comparar la contraseña en texto plano con el de esa contraseña en hash
+    public function contrasenaVerificar($contrasena, $contrasenaHash){
+        return password_verify($contrasena, $contrasenaHash);
+    }
 }
