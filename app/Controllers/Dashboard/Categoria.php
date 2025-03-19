@@ -9,7 +9,6 @@ class Categoria extends BaseController
 {
     public function index()
     {
-        session()->set('key', array('k', 'c'));
         $categoriaModel = new CategoriaModel();
 
         return view('/dashboard/categoria/index',[
@@ -18,7 +17,6 @@ class Categoria extends BaseController
     }
 
     public function new(){
-        var_dump(session()->get('key'));
         echo view('/dashboard/categoria/new',[
             'categoria' => [
                 'titulo' => '',

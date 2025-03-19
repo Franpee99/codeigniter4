@@ -1,11 +1,6 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Crear categoria</title>
-</head>
-<body>
+<?= $this->extend('Layouts/dashboard') ?>
+
+<?= $this->section('contenido') ?>
 
     <?= view('partials/_session') ?>
 
@@ -13,4 +8,5 @@
         <?= view('/dashboard/categoria/_form', ['op' => 'Crear']) ?>
     </form>
 </body>
-</html>
+
+<?= $this->endSection() ?>
