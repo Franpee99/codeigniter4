@@ -47,4 +47,33 @@ class Usuario extends BaseController
 
         return redirect()->back()->with('mensaje', 'Usuario o contraseña incorrecta');
     }
+
+    public function register(){
+        echo view('web/usuario/register');
+    }
+
+    public function register_post(){
+        $usuarioModel = new UsuarioModel();
+
+        if($this->validate('usuarios')){
+            $usuarioModel->insert([
+                'usuario' => $this->request->getPost('usuario'),
+                'email' => $this->request->getPost('email'),
+                'contrasena' => $usuarioModel->contrasenaHash($this->request->getPost('contrasena')),
+            ]);
+
+            return redirect()->to(route_to('usuario.login'))->with('mensaje', "Registro exitoso");
+        }
+
+        session()->setFlashdata([
+            'validacion' => $this->validator
+        ]);
+
+        return redirect()->back()->withInput(); //withInput para devolver las validaciones del validator
+    }
+
+    public function logout(){
+        session()->destroy();
+        return redirect()->to(route_to('usuario.login'))->with('mensaje', 'Sesión cerrada');
+    }
 }

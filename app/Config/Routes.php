@@ -32,5 +32,13 @@ $routes->group('dashboard', function($routes){
 });
 
 //Usuario
+//login
 $routes->get('login', '\App\Controllers\Web\Usuario::login', ['as' => 'usuario.login']);
 $routes->post('login_post', '\App\Controllers\Web\Usuario::login_post', ['as' => 'usuario.login_post']);
+
+//register
+$routes->get('register', '\App\Controllers\Web\Usuario::register', ['as' => 'usuario.register']);
+$routes->post('register_post', '\App\Controllers\Web\Usuario::register_post', ['as' => 'usuario.register_post']);
+
+//logout
+$routes->get('logout', '\App\Controllers\Web\Usuario::logout', ['as' => 'usuario.logout']);
