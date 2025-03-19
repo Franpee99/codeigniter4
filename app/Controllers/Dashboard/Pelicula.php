@@ -44,7 +44,7 @@ class Pelicula extends BaseController
                 'validacion' => $this->validator //validator trabaja conjunto validate de arriba
             ]);
 
-            return redirect()->back();
+            return redirect()->back()->withInput();
         }
 
         return redirect()->to('/dashboard/pelicula')->with('mensaje', 'Pelicula creada exitosamente.');
@@ -81,7 +81,7 @@ class Pelicula extends BaseController
                 'validacion' => $this->validator //validator trabaja conjunto validate de arriba
             ]);
 
-            return redirect()->back();
+            return redirect()->back()->withInput();
         }
 
 

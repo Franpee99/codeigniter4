@@ -37,7 +37,7 @@ class Categoria extends BaseController
                 'validacion' => $this->validator //validator trabaja conjunto validate de arriba, aqui se guarda los errores de la valiacion
             ]);
 
-            return redirect()->back();
+            return redirect()->back()->withInput(); //withInput para pasar los valores del old
         }
 
         return redirect()->to('/dashboard/categoria')->with('mensaje', 'Categoria creada exitosamente.');
@@ -73,7 +73,7 @@ class Categoria extends BaseController
                 'validacion' => $this->validator //validator trabaja conjunto validate de arriba
             ]);
 
-            return redirect()->back();
+            return redirect()->back()->withInput(); //withInput para pasar los valores del old
         }
 
         return redirect()->back()->with('mensaje', 'Categoria modificada exitosamente.');
