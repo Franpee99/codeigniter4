@@ -23,10 +23,7 @@ class Pelicula extends BaseController
 
     public function new(){
         echo view('/dashboard/pelicula/new',[
-            'pelicula' => [
-                'titulo' => '',
-                'descripcion' => '',
-            ]
+            'pelicula' => new PeliculaModel()
         ]);
     }
 

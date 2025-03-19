@@ -20,13 +20,13 @@
         <tbody>
             <?php foreach ($categorias as $categoria): ?>
                 <tr>
-                    <td><?php echo $categoria['id']; ?></td>
-                    <td><?php echo $categoria['titulo']; ?></td>
+                    <td><?php echo $categoria->id; ?></td>
+                    <td><?php echo $categoria->titulo; ?></td>
                     <td>
-                        <a href="/dashboard/categoria/show/<?= $categoria['id'] ?>">show</a>
-                        <a href="/dashboard/categoria/edit/<?= $categoria['id'] ?>">Editar</a>
+                        <a href="/dashboard/categoria/show/<?= $categoria->id ?>">show</a>
+                        <a href="/dashboard/categoria/edit/<?= $categoria->id ?>">Editar</a>
 
-                        <form action="/dashboard/categoria/delete/<?= $categoria['id']  ?>" method="post">
+                        <form action="/dashboard/categoria/delete/<?= $categoria->id ?>" method="post">
                             <button type="submit">Eliminar</button>
                         </form>
                     </td>
