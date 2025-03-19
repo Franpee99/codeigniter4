@@ -8,6 +8,10 @@ use CodeIgniter\Router\RouteCollection;
  */
 $routes->get('/', 'Home::index');
 
+$routes->group('api', ['namespace' => 'App\Controllers\Api'], function($routes){
+    $routes->resource('pelicula');
+});
+
 $routes->group('dashboard', function($routes){
     //Accede al controlador directamente -> php spark routes (para ver las rutas)
     //$routes->presenter('pelicula', ['controller' => 'Dashboard\Pelicula']);
