@@ -33,12 +33,20 @@ class Pelicula extends BaseController
     public function create(){
         $peliculaModel = new PeliculaModel();
 
-        $peliculaModel->insert([
-            'titulo' => $this->request->getPost('titulo'),
-            'descripcion' => $this->request->getPost('descripcion'),
-        ]);
+        if($this->validate('peliculas')){
+            $peliculaModel->insert([
+                'titulo' => $this->request->getPost('titulo'),
+                'descripcion' => $this->request->getPost('descripcion'),
+            ]);
 
-        session()->setFlashdata('mensaje', 'Pelicula creada exitosamente.');
+        } else {
+            session()->setFlashdata([
+                'validacion' => $this->validator //validator trabaja conjunto validate de arriba
+            ]);
+
+            return redirect()->back();
+        }
+
         return redirect()->to('/dashboard/pelicula')->with('mensaje', 'Pelicula creada exitosamente.');
     }
 
@@ -62,10 +70,20 @@ class Pelicula extends BaseController
     public function update($id){
         $peliculaModel = new PeliculaModel();
 
-        $peliculaModel->update($id, [
-            'titulo' => $this->request->getPost('titulo'),
-            'descripcion' => $this->request->getPost('descripcion'),
-        ]);
+        if($this->validate('peliculas')){
+            $peliculaModel->update($id, [
+                'titulo' => $this->request->getPost('titulo'),
+                'descripcion' => $this->request->getPost('descripcion'),
+            ]);
+
+        } else {
+            session()->setFlashdata([
+                'validacion' => $this->validator //validator trabaja conjunto validate de arriba
+            ]);
+
+            return redirect()->back();
+        }
+
 
        return redirect()->back()->with('mensaje', 'Pelicula modificada exitosamente.');
     }

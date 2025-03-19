@@ -2,9 +2,9 @@
 
 <?= $this->section('contenido') ?>
 
-    <h1>Listado</h1>
-
-    <?= view('partials/_session') ?>
+<?= $this->section('header') ?>
+    Listado de peliculas
+<?= $this->endSection() ?>
 
     <a href="/dashboard/pelicula/new">Crear</a>
 

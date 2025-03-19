@@ -2,7 +2,7 @@
 
 <?= $this->section('contenido') ?>
 
-    <?= view('partials/_session') ?>
+    <?= view('partials/_form_error') ?>
 
     <form action="/dashboard/categoria/create" method="post">
         <?= view('/dashboard/categoria/_form', ['op' => 'Crear']) ?>
