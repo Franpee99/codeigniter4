@@ -10,7 +10,7 @@ class PeliculaModel extends Model
     protected $returnType = 'object';
     protected $primaryKey = 'id';
 
-    protected $allowedFields = ['titulo', 'descripcion'];
+    protected $allowedFields = ['titulo', 'descripcion', 'categoria_id'];
 
 
 }

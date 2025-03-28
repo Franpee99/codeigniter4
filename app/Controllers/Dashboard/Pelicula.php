@@ -2,7 +2,7 @@
 
 namespace App\Controllers\Dashboard;
 use App\Controllers\BaseController;
-
+use App\Models\CategoriaModel;
 use App\Models\PeliculaModel;
 
 class Pelicula extends BaseController
@@ -22,8 +22,12 @@ class Pelicula extends BaseController
     }
 
     public function new(){
+
+        $categoriaModel = new CategoriaModel();
+
         echo view('/dashboard/pelicula/new',[
-            'pelicula' => new PeliculaModel()
+            'pelicula' => new PeliculaModel(),
+            'categorias' => $categoriaModel->find()
         ]);
     }
 
@@ -34,6 +38,7 @@ class Pelicula extends BaseController
             $peliculaModel->insert([
                 'titulo' => $this->request->getPost('titulo'),
                 'descripcion' => $this->request->getPost('descripcion'),
+                'categoria_id' => $this->request->getPost('categoria_id'),
             ]);
 
         } else {
@@ -58,9 +63,11 @@ class Pelicula extends BaseController
 
     public function edit($id){
         $peliculaModel = new PeliculaModel();
+        $categoriaModel = new CategoriaModel();
 
         return view('dashboard/pelicula/edit',[
             'pelicula' => $peliculaModel->find($id),
+            'categorias' => $categoriaModel->find(),
         ]);
     }
 
@@ -71,6 +78,7 @@ class Pelicula extends BaseController
             $peliculaModel->update($id, [
                 'titulo' => $this->request->getPost('titulo'),
                 'descripcion' => $this->request->getPost('descripcion'),
+                'categoria_id' => $this->request->getPost('categoria_id'),
             ]);
 
         } else {

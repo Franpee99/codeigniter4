@@ -1,0 +1,38 @@
+
+[0;32mCodeIgniter v4.6.0 Command Line Tool - Server Time: 2025-03-20 09:27:52 UTC+00:00[0m
+
+[0;33mRolling back migrations to batch:  0[0m
+[0;37m[41m[CodeIgniter\Exceptions\RuntimeException][0m
+There is a gap in the migration sequence near version number:  2025-03-20-090244
+at [0;32mSYSTEMPATH\Database\MigrationRunner.php:279[0m
+
+[0;32mBacktrace:[0m
+  1    [0;33mSYSTEMPATH\Commands\Database\MigrateRollback.php:101[0m
+       CodeIgniter\Database\MigrationRunner()->regress(0)
+
+  2    [0;33mSYSTEMPATH\CLI\Commands.php:70[0m
+       CodeIgniter\Commands\Database\MigrateRollback()->run([...])
+
+  3    [0;33mSYSTEMPATH\CLI\BaseCommand.php:119[0m
+       CodeIgniter\CLI\Commands()->run('migrate:rollback', [...])
+
+  4    [0;33mSYSTEMPATH\Commands\Database\MigrateRefresh.php:86[0m
+       CodeIgniter\CLI\BaseCommand()->call('migrate:rollback', [...])
+
+  5    [0;33mSYSTEMPATH\CLI\Commands.php:70[0m
+       CodeIgniter\Commands\Database\MigrateRefresh()->run([...])
+
+  6    [0;33mSYSTEMPATH\CLI\Console.php:48[0m
+       CodeIgniter\CLI\Commands()->run('migrate:refresh', [...])
+
+  7    [0;33mSYSTEMPATH\Boot.php:360[0m
+       CodeIgniter\CLI\Console()->run()
+
+  8    [0;33mSYSTEMPATH\Boot.php:104[0m
+       CodeIgniter\Boot::runCommand(Object(CodeIgniter\CLI\Console))
+
+  9    [0;33mROOTPATH\spark:84[0m
+       CodeIgniter\Boot::bootSpark(Object(Config\Paths))
+
+[0;33mRunning all new migrations...[0m
+[0;32mMigrations complete.[0m
