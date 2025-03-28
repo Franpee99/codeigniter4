@@ -16,9 +16,11 @@ class Pelicula extends BaseController
     {
         $peliculaModel = new PeliculaModel();
 
-        return view('/dashboard/pelicula/index',[
-            'peliculas' => $peliculaModel->findAll(),
-        ]);
+        $data = [
+            'peliculas' => $peliculaModel->select('peliculas.*, categorias.titulo as categoria')->join('categorias', 'categorias.id = peliculas.categoria_id')->find()
+        ];
+
+        return view('/dashboard/pelicula/index', $data);
     }
 
     public function new(){

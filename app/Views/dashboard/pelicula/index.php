@@ -13,6 +13,7 @@
             <tr>
                 <th>ID</th>
                 <th>Título</th>
+                <th>Categoría</th>
                 <th>Descripción</th>
             </tr>
         </thead>
@@ -21,6 +22,7 @@
                 <tr>
                     <td><?= $pelicula->id ?></td>
                     <td><?= $pelicula->titulo ?></td>
+                    <td><?= $pelicula->categoria ?></td>
                     <td><?= $pelicula->descripcion ?></td>
                     <td>
                         <a href="/dashboard/pelicula/show/<?= $pelicula->id ?>">show</a>
