@@ -1,0 +1,821 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Created with Jaspersoft Studio version 6.11.0.final using JasperReports Library version 6.11.0-0c4056ccaa4d25a5a8c45672d2f764ea3498bebb  -->
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="Factura" pageWidth="595" pageHeight="842" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="46edd980-d166-4dca-b72b-8cc0d809e53e">
+	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="congeladosGalimar_test"/>
+	<property name="com.jaspersoft.studio.data.sql.tables" value=""/>
+	<property name="com.jaspersoft.studio.data.sql.SQLQueryDesigner.sash.w1" value="216"/>
+	<property name="com.jaspersoft.studio.data.sql.SQLQueryDesigner.sash.w2" value="784"/>
+	<subDataset name="ResumenIVA" uuid="49e98f0d-f21e-4b38-8379-94a220094bd6">
+		<property name="com.jaspersoft.studio.data.sql.tables" value=""/>
+		<property name="com.jaspersoft.studio.data.defaultdataadapter" value="facturaDataBase"/>
+		<parameter name="Serie" class="java.lang.String"/>
+		<parameter name="Numero" class="java.lang.String"/>
+		<queryString language="SQL">
+			<![CDATA[SELECT
+  M.iva AS tipo_iva,
+  SUM(M.total) AS base_imponible,
+  SUM(M.total * (M.iva / 100)) AS cuota_iva,
+  SUM(M.total * (1 + (M.iva / 100))) AS total_con_iva
+FROM esi_invoice_items M
+JOIN esi_invoices I ON M.invoice_id = I.id
+WHERE I.serie = $P{Serie}
+  AND I.numero = $P{Numero}
+  AND M.Deleted <> 1
+GROUP BY M.iva
+ORDER BY M.iva]]>
+		</queryString>
+		<field name="tipo_iva" class="java.lang.Double">
+			<property name="com.jaspersoft.studio.field.label" value="tipo_iva"/>
+			<property name="com.jaspersoft.studio.field.tree.path" value="esi_invoice_items"/>
+		</field>
+		<field name="base_imponible" class="java.lang.Double">
+			<property name="com.jaspersoft.studio.field.label" value="base_imponible"/>
+		</field>
+		<field name="cuota_iva" class="java.lang.Double">
+			<property name="com.jaspersoft.studio.field.label" value="cuota_iva"/>
+		</field>
+		<field name="total_con_iva" class="java.math.BigDecimal">
+			<property name="com.jaspersoft.studio.field.label" value="total_con_iva"/>
+		</field>
+		<variable name="total_con_iva_SUM" class="java.math.BigDecimal" calculation="Sum">
+			<variableExpression><![CDATA[new java.math.BigDecimal($F{total_con_iva}.toString())]]></variableExpression>
+		</variable>
+		<variable name="TotalFactura" class="java.lang.Double" calculation="Sum">
+			<variableExpression><![CDATA[$F{base_imponible} + $F{cuota_iva}]]></variableExpression>
+		</variable>
+	</subDataset>
+	<parameter name="Serie" class="java.lang.String"/>
+	<parameter name="Numero" class="java.lang.String"/>
+	<parameter name="IdCompany" class="java.lang.String"/>
+	<queryString>
+		<![CDATA[SELECT E.name NombreEmpresa, E.address DireccionEmpresa, E.city PoblacionEmpresa, E.state ProvinciaEmpresa, E.zip CPEmpresa, E.country PaisEmpresa, E.phone TlfEmpresa, E.email EmailEmpresa, E.vat_number NIFEmpresa, E.logo,
+              I.bill_date, I.reference, I.company_name, I.comercial_name, I.address, I.state, I.zip, I.country, I.phone, I.vat_number, I.iva_included, I.serie, I.numero, I.iban, I.note,
+              M.title, M.description, M.boxes, M.quantity, M.rate, M.rate_iva, M.total, M.lote, M.dto, M.iva, M.re, M.irpf, M.intern_code, M.cost_price, M.order_date, M.numero NumeroPedido, M.serie SeriePedido,
+              C.company_name NombreCliente , C.address DireccionCliente, C.city PoblacionCliente, C.state ProvinciaCliente, C.zip CPCliente, C.country PaisCliente, C.vat_number NIFCliente, C.comercial_name ComercialCliente, C.intern_code CodigoCliente,
+              S.setting_value
+FROM esi_invoices I, esi_invoice_items M, esi_company E, esi_clients C, esi_settings S
+WHERE I.serie =  $P{Serie}  AND I.numero =  $P{Numero}  and
+				I.invoice_type = 0 AND
+				C.id = I.client_id AND
+               M.invoice_id = I.id AND
+               M.Deleted <> 1 AND
+               E.id =  $P{IdCompany} AND
+               S.setting_name = "estimate_footer"
+ ORDER BY M.order_date, M.serie, M.numero, M.id]]>
+	</queryString>
+	<field name="NombreEmpresa" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="NombreEmpresa"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="esi_company"/>
+		<property name="com.jaspersoft.studio.field.name" value="name"/>
+	</field>
+	<field name="DireccionEmpresa" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="DireccionEmpresa"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="esi_company"/>
+		<property name="com.jaspersoft.studio.field.name" value="address"/>
+	</field>
+	<field name="PoblacionEmpresa" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="PoblacionEmpresa"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="esi_company"/>
+		<property name="com.jaspersoft.studio.field.name" value="city"/>
+	</field>
+	<field name="ProvinciaEmpresa" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="ProvinciaEmpresa"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="esi_company"/>
+		<property name="com.jaspersoft.studio.field.name" value="state"/>
+	</field>
+	<field name="CPEmpresa" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="CPEmpresa"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="esi_company"/>
+		<property name="com.jaspersoft.studio.field.name" value="zip"/>
+	</field>
+	<field name="PaisEmpresa" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="PaisEmpresa"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="esi_company"/>
+		<property name="com.jaspersoft.studio.field.name" value="country"/>
+	</field>
+	<field name="TlfEmpresa" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="TlfEmpresa"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="esi_company"/>
+		<property name="com.jaspersoft.studio.field.name" value="phone"/>
+	</field>
+	<field name="EmailEmpresa" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="EmailEmpresa"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="esi_company"/>
+		<property name="com.jaspersoft.studio.field.name" value="email"/>
+	</field>
+	<field name="NIFEmpresa" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="NIFEmpresa"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="esi_company"/>
+		<property name="com.jaspersoft.studio.field.name" value="vat_number"/>
+	</field>
+	<field name="logo" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="logo"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="esi_company"/>
+	</field>
+	<field name="bill_date" class="java.sql.Date">
+		<property name="com.jaspersoft.studio.field.label" value="bill_date"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="esi_invoices"/>
+		<property name="com.jaspersoft.studio.field.name" value="bill_date"/>
+	</field>
+	<field name="reference" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="reference"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="esi_invoices"/>
+	</field>
+	<field name="company_name" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="company_name"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="esi_invoices"/>
+		<property name="com.jaspersoft.studio.field.name" value="company_name"/>
+	</field>
+	<field name="comercial_name" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="comercial_name"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="esi_invoices"/>
+		<property name="com.jaspersoft.studio.field.name" value="comercial_name"/>
+	</field>
+	<field name="address" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="address"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="esi_invoices"/>
+		<property name="com.jaspersoft.studio.field.name" value="address"/>
+	</field>
+	<field name="state" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="state"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="esi_invoices"/>
+		<property name="com.jaspersoft.studio.field.name" value="state"/>
+	</field>
+	<field name="zip" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="zip"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="esi_invoices"/>
+		<property name="com.jaspersoft.studio.field.name" value="zip"/>
+	</field>
+	<field name="country" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="country"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="esi_invoices"/>
+		<property name="com.jaspersoft.studio.field.name" value="country"/>
+	</field>
+	<field name="phone" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="phone"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="esi_invoices"/>
+		<property name="com.jaspersoft.studio.field.name" value="phone"/>
+	</field>
+	<field name="vat_number" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="vat_number"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="esi_invoices"/>
+		<property name="com.jaspersoft.studio.field.name" value="vat_number"/>
+	</field>
+	<field name="iva_included" class="java.lang.Integer">
+		<property name="com.jaspersoft.studio.field.label" value="iva_included"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="esi_invoices"/>
+		<property name="com.jaspersoft.studio.field.name" value="iva_included"/>
+	</field>
+	<field name="serie" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="serie"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="esi_invoices"/>
+		<property name="com.jaspersoft.studio.field.name" value="serie"/>
+	</field>
+	<field name="numero" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="numero"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="esi_invoices"/>
+		<property name="com.jaspersoft.studio.field.name" value="numero"/>
+	</field>
+	<field name="iban" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="iban"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="esi_invoices"/>
+	</field>
+	<field name="note" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="note"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="esi_invoices"/>
+	</field>
+	<field name="title" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="title"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="esi_invoice_items"/>
+		<property name="com.jaspersoft.studio.field.name" value="title"/>
+	</field>
+	<field name="description" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="description"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="esi_invoice_items"/>
+	</field>
+	<field name="boxes" class="java.lang.Integer">
+		<property name="com.jaspersoft.studio.field.label" value="boxes"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="esi_invoice_items"/>
+		<property name="com.jaspersoft.studio.field.name" value="boxes"/>
+	</field>
+	<field name="quantity" class="java.lang.Double">
+		<property name="com.jaspersoft.studio.field.label" value="quantity"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="esi_invoice_items"/>
+		<property name="com.jaspersoft.studio.field.name" value="quantity"/>
+	</field>
+	<field name="rate" class="java.lang.Double">
+		<property name="com.jaspersoft.studio.field.label" value="rate"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="esi_invoice_items"/>
+		<property name="com.jaspersoft.studio.field.name" value="rate"/>
+	</field>
+	<field name="rate_iva" class="java.lang.Double">
+		<property name="com.jaspersoft.studio.field.label" value="rate_iva"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="esi_invoice_items"/>
+		<property name="com.jaspersoft.studio.field.name" value="rate_iva"/>
+	</field>
+	<field name="total" class="java.lang.Double">
+		<property name="com.jaspersoft.studio.field.label" value="total"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="esi_invoice_items"/>
+		<property name="com.jaspersoft.studio.field.name" value="total"/>
+	</field>
+	<field name="lote" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="lote"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="esi_invoice_items"/>
+		<property name="com.jaspersoft.studio.field.name" value="lote"/>
+	</field>
+	<field name="dto" class="java.lang.Double">
+		<property name="com.jaspersoft.studio.field.label" value="dto"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="esi_invoice_items"/>
+		<property name="com.jaspersoft.studio.field.name" value="dto"/>
+	</field>
+	<field name="iva" class="java.lang.Double">
+		<property name="com.jaspersoft.studio.field.label" value="iva"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="esi_invoice_items"/>
+		<property name="com.jaspersoft.studio.field.name" value="iva"/>
+	</field>
+	<field name="re" class="java.lang.Double">
+		<property name="com.jaspersoft.studio.field.label" value="re"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="esi_invoice_items"/>
+		<property name="com.jaspersoft.studio.field.name" value="re"/>
+	</field>
+	<field name="irpf" class="java.lang.Double">
+		<property name="com.jaspersoft.studio.field.label" value="irpf"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="esi_invoice_items"/>
+		<property name="com.jaspersoft.studio.field.name" value="irpf"/>
+	</field>
+	<field name="intern_code" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="intern_code"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="esi_invoice_items"/>
+		<property name="com.jaspersoft.studio.field.name" value="intern_code"/>
+	</field>
+	<field name="cost_price" class="java.lang.Float">
+		<property name="com.jaspersoft.studio.field.label" value="cost_price"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="esi_invoice_items"/>
+		<property name="com.jaspersoft.studio.field.name" value="cost_price"/>
+	</field>
+	<field name="order_date" class="java.sql.Date">
+		<property name="com.jaspersoft.studio.field.label" value="order_date"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="esi_invoice_items"/>
+		<property name="com.jaspersoft.studio.field.name" value="order_date"/>
+	</field>
+	<field name="NumeroPedido" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="NumeroPedido"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="esi_invoice_items"/>
+		<property name="com.jaspersoft.studio.field.name" value="numero"/>
+	</field>
+	<field name="SeriePedido" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="SeriePedido"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="esi_invoice_items"/>
+		<property name="com.jaspersoft.studio.field.name" value="serie"/>
+	</field>
+	<field name="NombreCliente" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="NombreCliente"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="esi_clients"/>
+	</field>
+	<field name="DireccionCliente" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="DireccionCliente"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="esi_clients"/>
+	</field>
+	<field name="PoblacionCliente" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="PoblacionCliente"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="esi_clients"/>
+	</field>
+	<field name="ProvinciaCliente" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="ProvinciaCliente"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="esi_clients"/>
+	</field>
+	<field name="CPCliente" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="CPCliente"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="esi_clients"/>
+	</field>
+	<field name="PaisCliente" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="PaisCliente"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="esi_clients"/>
+	</field>
+	<field name="NIFCliente" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="NIFCliente"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="esi_clients"/>
+	</field>
+	<field name="ComercialCliente" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="ComercialCliente"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="esi_clients"/>
+	</field>
+	<field name="CodigoCliente" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="CodigoCliente"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="esi_clients"/>
+	</field>
+	<field name="setting_value" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="setting_value"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="esi_settings"/>
+	</field>
+	<variable name="Logo1" class="java.lang.String">
+		<variableExpression><![CDATA[$F{logo}.substring(
+    $F{logo}.indexOf("company_1"),
+    (
+        $F{logo}.contains(".png") ? $F{logo}.indexOf(".png") + 4 :
+        $F{logo}.contains(".jpg") ? $F{logo}.indexOf(".jpg") + 4 :
+        $F{logo}.contains(".jpeg") ? $F{logo}.indexOf(".jpeg") + 5 :
+        $F{logo}.contains(".gif") ? $F{logo}.indexOf(".gif") + 4 :
+        $F{logo}.contains(".webp") ? $F{logo}.indexOf(".webp") + 5 :
+        $F{logo}.contains(".bmp") ? $F{logo}.indexOf(".bmp") + 4 :
+        $F{logo}.contains(".tiff") ? $F{logo}.indexOf(".tiff") + 5 :
+        $F{logo}.contains(".svg") ? $F{logo}.indexOf(".svg") + 4 :
+        $F{logo}.contains(".ico") ? $F{logo}.indexOf(".ico") + 4 :
+        $F{logo}.contains(".avif") ? $F{logo}.indexOf(".avif") + 5 :
+        $F{logo}.contains(".jfif") ? $F{logo}.indexOf(".jfif") + 5 :
+        $F{logo}.contains(".heic") ? $F{logo}.indexOf(".heic") + 5 :
+        $F{logo}.contains(".apng") ? $F{logo}.indexOf(".apng") + 5 :
+        $F{logo}.contains(".psd") ? $F{logo}.indexOf(".psd") + 4 :
+        $F{logo}.contains(".raw") ? $F{logo}.indexOf(".raw") + 4 :
+        -1
+    )
+)]]></variableExpression>
+	</variable>
+	<variable name="Logo1URLCompleta" class="java.lang.String">
+		<variableExpression><![CDATA[$V{Logo1} != null && !$V{Logo1}.isEmpty()
+    ? "https://test.congeladosgalimar.com/files/system/" + $V{Logo1}
+    : ""]]></variableExpression>
+	</variable>
+	<variable name="NumeroAlbaran" class="java.lang.String">
+		<variableExpression><![CDATA["Pedido: " + $F{NumeroPedido} + "/" + $F{SeriePedido} + " de fecha: " + $F{order_date}]]></variableExpression>
+	</variable>
+	<variable name="Documento" class="java.lang.String">
+		<variableExpression><![CDATA[$F{numero} + $F{serie}]]></variableExpression>
+	</variable>
+	<variable name="Subtotal" class="java.lang.Double" calculation="Sum">
+		<variableExpression><![CDATA[$F{total}]]></variableExpression>
+	</variable>
+	<variable name="Base21" class="java.math.BigDecimal" calculation="Sum">
+		<variableExpression><![CDATA[$F{iva} == 21.0 ? new java.math.BigDecimal($F{total}.toString()) : java.math.BigDecimal.ZERO]]></variableExpression>
+	</variable>
+	<variable name="Base10" class="java.math.BigDecimal" calculation="Sum">
+		<variableExpression><![CDATA[$F{iva} == 10.0 ? new java.math.BigDecimal($F{total}.toString()) : java.math.BigDecimal.ZERO]]></variableExpression>
+	</variable>
+	<variable name="CuotaIVA21" class="java.math.BigDecimal">
+		<initialValueExpression><![CDATA[$V{Base21}.multiply(new java.math.BigDecimal("0.21"))]]></initialValueExpression>
+	</variable>
+	<variable name="CuotaIVA10" class="java.math.BigDecimal">
+		<variableExpression><![CDATA[$V{Base10}.multiply(new java.math.BigDecimal("0.10"))]]></variableExpression>
+	</variable>
+	<variable name="TotalFacturaFinal" class="java.math.BigDecimal"/>
+	<variable name="SumaYSigue" class="java.lang.Double" calculation="Sum">
+		<variableExpression><![CDATA[$F{total}]]></variableExpression>
+	</variable>
+	<variable name="NotaSinHTML" class="java.lang.String">
+		<variableExpression><![CDATA[$F{note}.replaceAll("\\<[^>]*>", "")]]></variableExpression>
+	</variable>
+	<group name="PedidoGroup"/>
+	<group name="grpAlbaran">
+		<groupExpression><![CDATA["Albaran: " +  $F{NumeroPedido} +  $F{SeriePedido}]]></groupExpression>
+		<groupHeader>
+			<band height="12">
+				<textField>
+					<reportElement x="20" y="1" width="142" height="10" isRemoveLineWhenBlank="true" uuid="fdcfd4be-0f59-476a-8dd7-51afbe755cca">
+						<printWhenExpression><![CDATA[!("0".equals($F{NumeroPedido}))]]></printWhenExpression>
+					</reportElement>
+					<textElement textAlignment="Center">
+						<font fontName="DejaVu Sans" size="7" isBold="false" isItalic="true"/>
+					</textElement>
+					<textFieldExpression><![CDATA["Pedido: " + $F{NumeroPedido} + "/" + $F{SeriePedido} + " de fecha: "]]></textFieldExpression>
+				</textField>
+				<textField pattern="dd/MM/yyyy">
+					<reportElement x="150" y="1" width="70" height="10" printWhenGroupChanges="grpAlbaran" uuid="4067210b-81a3-461f-a495-b8bb80c749fa">
+						<printWhenExpression><![CDATA[!("0".equals($F{NumeroPedido}))]]></printWhenExpression>
+					</reportElement>
+					<textElement textAlignment="Left">
+						<font fontName="DejaVu Sans" size="7"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$F{order_date}]]></textFieldExpression>
+				</textField>
+			</band>
+		</groupHeader>
+		<groupFooter>
+			<band/>
+		</groupFooter>
+	</group>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<pageHeader>
+		<band height="172">
+			<rectangle radius="5">
+				<reportElement x="0" y="97" width="287" height="38" uuid="fa588927-4453-4769-9649-692fb49c5ce9"/>
+				<graphicElement>
+					<pen lineWidth="0.25"/>
+				</graphicElement>
+			</rectangle>
+			<rectangle radius="5">
+				<reportElement x="310" y="60" width="240" height="75" uuid="113548f7-1999-44da-adae-17add4f2cb67"/>
+				<graphicElement>
+					<pen lineWidth="0.25"/>
+				</graphicElement>
+			</rectangle>
+			<textField>
+				<reportElement x="320" y="0" width="220" height="20" uuid="30510e47-f6af-4482-8ca4-efc62e8fd8e7"/>
+				<textElement textAlignment="Center">
+					<font fontName="DejaVu Sans" size="9" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{NombreEmpresa}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="310" y="30" width="104" height="10" uuid="e7d182f6-0cfa-47e0-8ad6-6fa8b29a0638"/>
+				<textElement>
+					<font fontName="DejaVu Sans" size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{DireccionEmpresa}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="310" y="40" width="30" height="11" uuid="7f2ec537-a92a-4b27-ae86-e59f37e5d7bd"/>
+				<textElement>
+					<font fontName="DejaVu Sans" size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{CPEmpresa}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="340" y="40" width="62" height="11" uuid="10b0bd6e-f660-4b59-be82-3af544d27cdf"/>
+				<textElement>
+					<font fontName="DejaVu Sans" size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{ProvinciaEmpresa}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="370" y="20" width="100" height="10" uuid="815a038f-0cc5-4563-b9c9-0bc324d9f9c3"/>
+				<textElement textAlignment="Center">
+					<font fontName="DejaVu Sans" size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{NIFEmpresa}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="440" y="40" width="110" height="11" uuid="99656564-a2fc-415c-9914-8358143615cf"/>
+				<textElement markup="none">
+					<font fontName="DejaVu Sans" size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{EmailEmpresa}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="3" y="118" width="65" height="30" uuid="6a7594f1-2b46-4302-8aef-7aae186d66a4"/>
+				<textElement>
+					<font fontName="DejaVu Sans" size="8" isBold="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{numero} + "/" + $F{serie}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="320" y="70" width="220" height="10" uuid="ca668b38-7962-446b-b59d-f5ec94240704"/>
+				<textElement>
+					<font fontName="DejaVu Sans" size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{NombreCliente}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="320" y="80" width="152" height="10" uuid="c3a0950b-023f-4d99-90e0-01ea15d04210"/>
+				<textElement>
+					<font fontName="DejaVu Sans" size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{ComercialCliente}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="320" y="90" width="220" height="10" uuid="beae16a5-b51f-46cc-8f27-3baf4e3888ed"/>
+				<textElement>
+					<font fontName="DejaVu Sans" size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{DireccionCliente}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="320" y="100" width="70" height="10" uuid="3d5e8245-3692-4332-81aa-fda1ddd2e9a1"/>
+				<textElement>
+					<font fontName="DejaVu Sans" size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{CPCliente}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="390" y="100" width="140" height="10" uuid="1ee01368-7834-4263-9b91-2a68841af9f2"/>
+				<textElement>
+					<font fontName="DejaVu Sans" size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{PoblacionCliente}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="320" y="110" width="140" height="10" uuid="e171aefa-b804-4af9-9340-66b15df2019a"/>
+				<textElement>
+					<font fontName="DejaVu Sans" size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{ProvinciaCliente}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="320" y="120" width="220" height="10" uuid="9a16388b-b7e8-48e3-a22a-01e25646f6a7"/>
+				<textElement>
+					<font fontName="DejaVu Sans" size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{NIFCliente}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="3" y="103" width="65" height="15" uuid="efa19913-5328-416d-a655-33e954ce1420"/>
+				<textElement>
+					<font fontName="DejaVu Sans" size="8" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Nº Factura]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="78" y="103" width="65" height="15" uuid="51d95290-0fd5-4886-b276-a9b51e5d0508"/>
+				<textElement>
+					<font fontName="DejaVu Sans" size="8" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Fecha]]></text>
+			</staticText>
+			<textField pattern="dd/MM/yyyy">
+				<reportElement x="78" y="118" width="65" height="30" uuid="4e53c100-ed54-45b5-ad7a-65eb5c02cb88"/>
+				<textElement>
+					<font fontName="DejaVu Sans" size="8" isBold="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{bill_date}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="148" y="103" width="65" height="15" uuid="65ad91dc-6145-433c-914e-b114ec96f962"/>
+				<textElement>
+					<font fontName="DejaVu Sans" size="8" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Cod. Cliente]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="148" y="118" width="65" height="30" uuid="79636a8a-a4cc-4a44-8506-5b5ae67fd88e"/>
+				<textElement>
+					<font fontName="DejaVu Sans" size="8" isBold="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{CodigoCliente}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="440" y="30" width="104" height="10" uuid="e316e623-cb74-41b7-b1a7-90437de53175"/>
+				<textElement>
+					<font fontName="DejaVu Sans" size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA["Tlf: " + $F{phone}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="218" y="103" width="65" height="15" uuid="49419b89-3a64-4e87-aaac-20590a8dcaeb"/>
+				<textElement textAlignment="Center">
+					<font fontName="DejaVu Sans" size="8" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Num. Pág.]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="227" y="118" width="23" height="30" uuid="bc929b4f-0489-4524-96b1-2cbf91f0794d"/>
+				<textElement textAlignment="Right">
+					<font fontName="DejaVu Sans" size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$V{PAGE_NUMBER}]]></textFieldExpression>
+			</textField>
+			<textField evaluationTime="Report">
+				<reportElement x="250" y="118" width="24" height="30" uuid="14665c70-ef5e-4538-93eb-25300d78e6fa"/>
+				<textElement textAlignment="Left">
+					<font fontName="DejaVu Sans" size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[" de " + $V{PAGE_NUMBER}]]></textFieldExpression>
+			</textField>
+			<rectangle radius="5">
+				<reportElement x="0" y="140" width="550" height="30" uuid="9aad57b9-9b22-4c03-8e7b-39cf598a13c6"/>
+				<graphicElement>
+					<pen lineWidth="0.25"/>
+				</graphicElement>
+			</rectangle>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement x="3" y="140" width="542" height="30" isPrintWhenDetailOverflows="true" uuid="05c2c609-c730-4ec2-b85b-6a232dbd1655"/>
+				<textElement>
+					<font fontName="DejaVu Sans" size="8" isBold="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{note}.replaceAll("\\<[^>]*>", "")]]></textFieldExpression>
+			</textField>
+			<image evaluationTime="Report">
+				<reportElement x="10" y="-10" width="102" height="90" isPrintWhenDetailOverflows="true" uuid="5760a932-bc35-41b7-b08c-d7549ed7862f"/>
+				<imageExpression><![CDATA[$V{Logo1URLCompleta}]]></imageExpression>
+			</image>
+		</band>
+	</pageHeader>
+	<columnHeader>
+		<band height="20" splitType="Stretch">
+			<staticText>
+				<reportElement mode="Opaque" x="0" y="0" width="240" height="13" backcolor="#DEDEDE" uuid="3b59e604-9d74-414a-aa03-2073c16736eb">
+					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="cde753aa-737e-4f84-9586-c65f6ba0cfb3"/>
+				</reportElement>
+				<textElement verticalAlignment="Middle">
+					<font fontName="DejaVu Sans" size="8" isBold="true"/>
+				</textElement>
+				<text><![CDATA[ Artículo]]></text>
+			</staticText>
+			<staticText>
+				<reportElement mode="Opaque" x="286" y="0" width="61" height="13" backcolor="#DEDEDE" uuid="1d250db8-dc07-4a3c-b32f-248f403a17d5">
+					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="5d7140d2-c8c8-410a-906e-87467dcf351d"/>
+				</reportElement>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font fontName="DejaVu Sans" size="8" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Cantidad]]></text>
+			</staticText>
+			<staticText>
+				<reportElement mode="Opaque" x="346" y="0" width="60" height="13" backcolor="#DEDEDE" uuid="623dbe8a-7d48-4685-a4c0-a1b3cde642c4">
+					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="565c3447-1515-4b8f-8c48-58b21de603f2"/>
+				</reportElement>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font fontName="DejaVu Sans" size="8" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Precio]]></text>
+			</staticText>
+			<staticText>
+				<reportElement mode="Opaque" x="494" y="0" width="56" height="13" backcolor="#DEDEDE" uuid="c6893235-2480-45bb-91f6-1a3534673a56">
+					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="0f0a071e-4a34-483a-a189-94e7f0a86c75"/>
+				</reportElement>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font fontName="DejaVu Sans" size="8" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Total ]]></text>
+			</staticText>
+			<staticText>
+				<reportElement mode="Opaque" x="406" y="0" width="44" height="13" backcolor="#DEDEDE" uuid="6fdf3e2c-2ee1-4797-a10a-bd152aef923b">
+					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="968ad8fb-4f29-4edb-9b54-9fa3423ad65a"/>
+				</reportElement>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font fontName="DejaVu Sans" size="8" isBold="true"/>
+				</textElement>
+				<text><![CDATA[% IVA]]></text>
+			</staticText>
+			<staticText>
+				<reportElement mode="Opaque" x="240" y="0" width="46" height="13" backcolor="#DEDEDE" uuid="b76ba531-ae06-4d0a-98b9-32c46b33abe1">
+					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="5d7140d2-c8c8-410a-906e-87467dcf351d"/>
+				</reportElement>
+				<textElement textAlignment="Left" verticalAlignment="Middle">
+					<font fontName="DejaVu Sans" size="8" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Lote]]></text>
+			</staticText>
+			<staticText>
+				<reportElement mode="Opaque" x="450" y="0" width="44" height="13" backcolor="#DEDEDE" uuid="07279548-af47-4f74-89f5-2914577ace76">
+					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="968ad8fb-4f29-4edb-9b54-9fa3423ad65a"/>
+				</reportElement>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font fontName="DejaVu Sans" size="8" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Dto.]]></text>
+			</staticText>
+		</band>
+	</columnHeader>
+	<detail>
+		<band height="20" splitType="Stretch">
+			<textField>
+				<reportElement x="0" y="0" width="240" height="10" uuid="f3e36b01-ac59-4b21-afb1-c93fc8d6adfb">
+					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="cde753aa-737e-4f84-9586-c65f6ba0cfb3"/>
+				</reportElement>
+				<textElement textAlignment="Left">
+					<font fontName="DejaVu Sans" size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{title}]]></textFieldExpression>
+			</textField>
+			<textField pattern="#,##0.00">
+				<reportElement x="286" y="0" width="60" height="10" uuid="47623266-ed9a-43a7-8270-279ae6716ee5">
+					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="5d7140d2-c8c8-410a-906e-87467dcf351d"/>
+				</reportElement>
+				<textElement textAlignment="Right">
+					<font fontName="DejaVu Sans" size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{quantity}]]></textFieldExpression>
+			</textField>
+			<textField pattern="#,##0.00">
+				<reportElement x="346" y="0" width="60" height="10" uuid="9fd43928-8682-4f49-b497-d6995cd7e9dd">
+					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="565c3447-1515-4b8f-8c48-58b21de603f2"/>
+				</reportElement>
+				<textElement textAlignment="Right">
+					<font fontName="DejaVu Sans" size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{rate}]]></textFieldExpression>
+			</textField>
+			<textField pattern="#,##0.00">
+				<reportElement x="464" y="0" width="30" height="10" uuid="ce0ecfd4-f825-4b07-b543-e1740234c033">
+					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="968ad8fb-4f29-4edb-9b54-9fa3423ad65a"/>
+					<printWhenExpression><![CDATA[$F{dto} !=0]]></printWhenExpression>
+				</reportElement>
+				<textElement textAlignment="Right">
+					<font fontName="DejaVu Sans" size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{dto}]]></textFieldExpression>
+			</textField>
+			<textField pattern="#,##0.00">
+				<reportElement x="494" y="0" width="55" height="10" uuid="1e810b24-9ba0-4405-a543-649799d06d96">
+					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="0f0a071e-4a34-483a-a189-94e7f0a86c75"/>
+				</reportElement>
+				<textElement textAlignment="Right">
+					<font fontName="DejaVu Sans" size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{total}]]></textFieldExpression>
+			</textField>
+			<textField pattern="#,##0.00">
+				<reportElement x="420" y="0" width="30" height="10" uuid="e1fcb963-6611-4d30-924d-87536d86598e">
+					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="968ad8fb-4f29-4edb-9b54-9fa3423ad65a"/>
+				</reportElement>
+				<textElement textAlignment="Right">
+					<font fontName="DejaVu Sans" size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{iva}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement x="240" y="0" width="46" height="10" uuid="be5efdb9-8dca-4e41-a96a-7a93ca345373">
+					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="5d7140d2-c8c8-410a-906e-87467dcf351d"/>
+				</reportElement>
+				<textElement textAlignment="Left">
+					<font fontName="DejaVu Sans" size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{lote}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement isPrintRepeatedValues="false" x="10" y="10" width="230" height="10" isRemoveLineWhenBlank="true" uuid="47da66a4-b32c-4120-8808-6295e93e988b">
+					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="cde753aa-737e-4f84-9586-c65f6ba0cfb3"/>
+				</reportElement>
+				<textElement textAlignment="Left">
+					<font fontName="DejaVu Sans" size="7"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{description}]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+	<pageFooter>
+		<band height="137" splitType="Stretch">
+			<staticText>
+				<reportElement x="0" y="82" width="550" height="50" uuid="e4ef8b32-09fb-48d2-b9e5-de15bc7c3c80"/>
+				<textElement>
+					<font size="6"/>
+				</textElement>
+				<text><![CDATA[De acuerdo con lo establecido en el Reglamento General de Protección de Datos, le informamos que trataremos sus datos personales con la finalidad de realizar la gestión administrativa, contable y fiscal, así como enviarle comuniaciones comerciales sobre nuestro productos y/o servicos. Los datos proporcionados se consevarán en que exista una obligacion legal y lo trataremos en base a su consentimiento o a la ejecucción de un contrato o por obligación legal. Asimismo, le informamos de la posibilidad de ejercer los siguientes derechos sobre sus datos personales, derecho de acceso, rectificación, supresión u olvido, limitación, oposición, portabilidad y a retirar el consentimiento prestado. Para ello podrá enviar un email a: contabilidad.congeladosfernando@gmail.com
+Además, el interesado puede dirigirse a la Autoridad de Control en materia de Protección de Datos competente para obtener información adicional o presentar una reclamación.
+Datos identificativos del responsable: Guzcot, S.L.. B75541991, Avenida de Rota - 1550 - Chipiona - CADIZ 956359856]]></text>
+			</staticText>
+			<textField pattern="#,##0.00">
+				<reportElement x="470" y="10" width="81" height="10" uuid="f59cf283-46f5-40d7-8006-27b0f1770bb9"/>
+				<textElement textAlignment="Right">
+					<font fontName="DejaVu Sans" size="8" isItalic="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$V{SumaYSigue}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="402" y="10" width="68" height="10" uuid="8483eab6-18e3-4de4-83fe-a4018b81a27d"/>
+				<textElement>
+					<font fontName="DejaVu Sans" size="8" isItalic="true"/>
+				</textElement>
+				<text><![CDATA[Suma y sigue ...]]></text>
+			</staticText>
+			<line>
+				<reportElement x="0" y="82" width="550" height="1" uuid="fa174b17-4035-42fa-ad4b-1d53bc656900">
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
+				<graphicElement>
+					<pen lineWidth="0.25" lineStyle="Solid"/>
+				</graphicElement>
+			</line>
+			<textField>
+				<reportElement x="-20" y="-550" width="10" height="540" uuid="3b383c13-1787-487b-88f9-fb8e107432b9"/>
+				<textElement rotation="Left">
+					<font fontName="DejaVu Sans" size="5"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{setting_value}]]></textFieldExpression>
+			</textField>
+		</band>
+	</pageFooter>
+	<lastPageFooter>
+		<band height="143">
+			<subreport>
+				<reportElement x="0" y="0" width="550" height="80" uuid="ffe841b7-7470-4c16-8c27-5459310cc295"/>
+				<subreportParameter name="Serie">
+					<subreportParameterExpression><![CDATA[$P{Serie}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="Numero">
+					<subreportParameterExpression><![CDATA[$P{Numero}]]></subreportParameterExpression>
+				</subreportParameter>
+				<connectionExpression><![CDATA[$P{REPORT_CONNECTION}]]></connectionExpression>
+				<subreportExpression><![CDATA["FacturaResumenIVA.jasper"]]></subreportExpression>
+			</subreport>
+			<staticText>
+				<reportElement x="0" y="90" width="550" height="50" uuid="6d426142-af2a-4c08-a2ef-b0f30f1e7842"/>
+				<textElement>
+					<font size="6"/>
+				</textElement>
+				<text><![CDATA[De acuerdo con lo establecido en el Reglamento General de Protección de Datos, le informamos que trataremos sus datos personales con la finalidad de realizar la gestión administrativa, contable y fiscal, así como enviarle comuniaciones comerciales sobre nuestro productos y/o servicos. Los datos proporcionados se consevarán en que exista una obligacion legal y lo trataremos en base a su consentimiento o a la ejecucción de un contrato o por obligación legal. Asimismo, le informamos de la posibilidad de ejercer los siguientes derechos sobre sus datos personales, derecho de acceso, rectificación, supresión u olvido, limitación, oposición, portabilidad y a retirar el consentimiento prestado. Para ello podrá enviar un email a: contabilidad.congeladosfernando@gmail.com
+Además, el interesado puede dirigirse a la Autoridad de Control en materia de Protección de Datos competente para obtener información adicional o presentar una reclamación.
+Datos identificativos del responsable: Guzcot, S.L.. B75541991, Avenida de Rota - 1550 - Chipiona - CADIZ 956359856]]></text>
+			</staticText>
+			<line>
+				<reportElement x="0" y="90" width="550" height="1" uuid="aa7e65ee-69ff-491f-9ad5-cd7bb4beb1fa">
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
+				<graphicElement>
+					<pen lineWidth="0.25" lineStyle="Solid"/>
+				</graphicElement>
+			</line>
+			<textField>
+				<reportElement x="-20" y="-560" width="10" height="560" uuid="5d256b74-a940-4aab-9ab9-1e11ce1a1022"/>
+				<textElement rotation="Left">
+					<font fontName="DejaVu Sans" size="5"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{setting_value}]]></textFieldExpression>
+			</textField>
+		</band>
+	</lastPageFooter>
+	<summary>
+		<band height="26" splitType="Stretch"/>
+	</summary>
+</jasperReport>
