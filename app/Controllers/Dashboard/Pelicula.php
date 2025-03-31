@@ -60,6 +60,7 @@ class Pelicula extends BaseController
 
         return view('dashboard/pelicula/show',[
             'pelicula' => $peliculaModel->find($id),
+            'imagenes' => $peliculaModel->getImagenById($id),
         ]);
     }
 
