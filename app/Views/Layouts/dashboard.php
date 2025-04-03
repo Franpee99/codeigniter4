@@ -13,5 +13,7 @@
 
     <?= $this->renderSection('contenido') ?>
 
+    <?= $this->renderSection('scripts') ?>
+
 </body>
 </html>
