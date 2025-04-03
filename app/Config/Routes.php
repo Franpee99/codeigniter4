@@ -47,4 +47,6 @@ $routes->post('register_post', '\App\Controllers\Web\Usuario::register_post', ['
 //logout
 $routes->get('logout', '\App\Controllers\Web\Usuario::logout', ['as' => 'usuario.logout']);
 
-$routes->get('informe/prueba', 'Informe::prueba');
+
+
+$routes->get('informe/resumen-carga', 'Informe::resumenCarga');
