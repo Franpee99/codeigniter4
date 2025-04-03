@@ -105,10 +105,11 @@ class Filters extends BaseFilters
      *
      * @var array<string, array<string, list<string>>>
      */
-    public array $filters = [
+    // public array $filters = [
 
-        'DashboardFilter' => [
-            'before' => [
-                'dashboard/*']],
-    ];
+    //COMENTADO EL INICIAR SESION
+    //     'DashboardFilter' => [
+    //         'before' => [
+    //             'dashboard/*']],
+    // ];
 }
