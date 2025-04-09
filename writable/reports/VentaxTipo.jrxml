@@ -1,0 +1,299 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Created with Jaspersoft Studio version 6.8.0.final using JasperReports Library version 6.8.0-2ed8dfabb690ff337a5797129f2cd92902b0c87b  -->
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="Articulos" pageWidth="595" pageHeight="842" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="6a35cc83-b5d6-4c3f-8dc3-9ea55935ca0f">
+	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="facturaDataBase"/>
+	<property name="com.jaspersoft.studio.data.sql.tables" value=""/>
+	<property name="com.jaspersoft.studio.data.sql.SQLQueryDesigner.sash.w1" value="238"/>
+	<property name="com.jaspersoft.studio.data.sql.SQLQueryDesigner.sash.w2" value="751"/>
+	<property name="com.jaspersoft.studio.unit." value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.pageHeight" value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.pageWidth" value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.topMargin" value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.bottomMargin" value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.leftMargin" value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.rightMargin" value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.columnWidth" value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.columnSpacing" value="pixel"/>
+	<parameter name="DesdeFecha" class="java.lang.String"/>
+	<parameter name="HastaFecha" class="java.lang.String"/>
+	<parameter name="IdEmpresa" class="java.lang.Integer"/>
+	<parameter name="DesdeComercial" class="java.lang.Integer"/>
+	<parameter name="HastaComercial" class="java.lang.Integer"/>
+	<parameter name="param_set" class="java.lang.String">
+		<parameterDescription><![CDATA[Lista de comerciales expandidos]]></parameterDescription>
+	</parameter>
+	<parameter name="tree_comercial" class="java.lang.String">
+		<parameterDescription><![CDATA[Comercial actual]]></parameterDescription>
+	</parameter>
+	<parameter name="tree_estado" class="java.lang.Boolean">
+		<parameterDescription><![CDATA[Si se debe expandir el comercial o no]]></parameterDescription>
+	</parameter>
+	<queryString>
+		<![CDATA[Select E.name As nombreEmpresa, I.assigned_to As id_comercial, CONCAT(U.first_name," ", U.last_name) As nombreComercial,  COUNT(I.serie) As numeroFacturas, 
+       SUM(CASE WHEN A.control_stock = 'services' THEN (M.quantity * (M.rate*( 1 - (M.dto /100)))) ELSE 0 END) As Servicios, 
+       SUM(CASE WHEN A.control_stock <> 'services' THEN (M.quantity * (M.rate*( 1 - (M.dto /100)))) ELSE 0 END) As Resto,
+       SUM(I.total) As Total
+       
+From esi_invoices I, esi_invoice_items M, esi_items A, esi_company E, esi_users U
+Where I.bill_date BETWEEN  $P{DesdeFecha}  AND  $P{HastaFecha}  AND
+      I.deleted <> 1 AND 
+      I.invoice_type = 0 AND
+      I.assigned_to BETWEEN $P{DesdeComercial} AND  $P{HastaComercial} AND
+      M.invoice_id = I.id AND
+      M.item_type = '0' AND
+      M.deleted <> 1 AND
+      A.id = M.item_id  AND
+      E.id =  $P{IdEmpresa} AND
+      U.id = I.assigned_to 
+Group by E.name, I.assigned_to, CONCAT(U.first_name," ", U.last_name)
+Order by CONCAT(U.first_name," ", U.last_name)]]>
+	</queryString>
+	<field name="nombreEmpresa" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="nombreEmpresa"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="esi_company"/>
+	</field>
+	<field name="id_comercial" class="java.lang.Integer">
+		<property name="com.jaspersoft.studio.field.label" value="id_comercial"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="esi_invoices"/>
+	</field>
+	<field name="nombreComercial" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="nombreComercial"/>
+	</field>
+	<field name="numeroFacturas" class="java.lang.Long">
+		<property name="com.jaspersoft.studio.field.label" value="numeroFacturas"/>
+	</field>
+	<field name="Servicios" class="java.lang.Double">
+		<property name="com.jaspersoft.studio.field.label" value="Servicios"/>
+	</field>
+	<field name="Resto" class="java.lang.Double">
+		<property name="com.jaspersoft.studio.field.label" value="Resto"/>
+	</field>
+	<field name="Total" class="java.lang.Double">
+		<property name="com.jaspersoft.studio.field.label" value="Total"/>
+	</field>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<pageHeader>
+		<band height="91" splitType="Stretch">
+			<staticText>
+				<reportElement x="375" y="0" width="180" height="22" uuid="314fc3fa-460f-4641-a788-f8cbd4a017e3">
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
+				<textElement textAlignment="Right">
+					<font size="12"/>
+				</textElement>
+				<text><![CDATA[LISTADO DE VENTA POR TIPO]]></text>
+			</staticText>
+			<line>
+				<reportElement x="0" y="20" width="555" height="1" uuid="a6ee794e-de94-423f-9d26-648203297357">
+					<property name="com.jaspersoft.studio.unit.x" value="px"/>
+					<property name="com.jaspersoft.studio.unit.y" value="px"/>
+				</reportElement>
+			</line>
+			<textField pattern="dd/MM/yyyy" isBlankWhenNull="true">
+				<reportElement x="20" y="30" width="130" height="10" uuid="4e691fad-91fe-4bb6-a6d5-1f3663eba2cc"/>
+				<textElement>
+					<font fontName="DejaVu Sans" size="8" isItalic="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA["Desde Fecha: " + 
+  new java.text.SimpleDateFormat("dd/MM/yyyy").format(
+    new java.text.SimpleDateFormat("yyyy-MM-dd").parse($P{DesdeFecha})
+  )]]></textFieldExpression>
+			</textField>
+			<textField pattern="dd/MM/yyyy" isBlankWhenNull="true">
+				<reportElement x="160" y="30" width="130" height="10" uuid="963cd3b9-8a3f-4bfd-b9ff-ffa490f4e4e3"/>
+				<textElement>
+					<font fontName="DejaVu Sans" size="8" isItalic="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA["Hasta Fecha: " + 
+  new java.text.SimpleDateFormat("dd/MM/yyyy").format(
+    new java.text.SimpleDateFormat("yyyy-MM-dd").parse($P{HastaFecha})
+  )]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="0" y="6" width="300" height="15" uuid="41f8b67d-6c0c-465f-9d61-a070f14cba13">
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
+				<textFieldExpression><![CDATA[$F{nombreEmpresa}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="280" y="71" width="73" height="14" uuid="18fb0c0d-4f29-4083-a66b-74ff8ba2ec8f">
+					<property name="com.jaspersoft.studio.unit.y" value="px"/>
+				</reportElement>
+				<textElement textAlignment="Right">
+					<font fontName="DejaVu Sans" size="8" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Base Servicios]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="0" y="72" width="120" height="13" uuid="98629640-ebe3-47e4-b99e-7a1bcc6faa7d"/>
+				<textElement>
+					<font fontName="DejaVu Sans" size="8" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Comercial]]></text>
+			</staticText>
+			<line>
+				<reportElement x="0" y="83" width="616" height="1" uuid="4cfa1a6a-115f-48c5-9e05-9637ee3cae93">
+					<property name="com.jaspersoft.studio.unit.x" value="px"/>
+					<property name="com.jaspersoft.studio.unit.y" value="px"/>
+				</reportElement>
+			</line>
+			<staticText>
+				<reportElement x="360" y="71" width="56" height="14" uuid="18801ba0-89b9-46b9-b99d-1bd798a787dd">
+					<property name="com.jaspersoft.studio.unit.y" value="px"/>
+				</reportElement>
+				<textElement textAlignment="Right">
+					<font fontName="DejaVu Sans" size="8" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Base Resto]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="130" y="72" width="40" height="13" uuid="cf73e12b-e126-4658-8ae6-c068df718e87"/>
+				<textElement>
+					<font fontName="DejaVu Sans" size="8" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Nº Fact.]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="429" y="71" width="65" height="14" uuid="23a0483d-fb49-4f7b-9e28-b3f3340a988f">
+					<property name="com.jaspersoft.studio.unit.y" value="px"/>
+				</reportElement>
+				<textElement textAlignment="Right">
+					<font fontName="DejaVu Sans" size="8" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Total]]></text>
+			</staticText>
+			<textField pattern="dd/MM/yyyy" isBlankWhenNull="true">
+				<reportElement x="20" y="50" width="130" height="10" uuid="2bf66691-f6f6-48bf-ab6f-d800e1f7162f"/>
+				<textElement>
+					<font fontName="DejaVu Sans" size="8" isItalic="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA["Desde Comerical: " + $P{DesdeComercial}]]></textFieldExpression>
+			</textField>
+			<textField pattern="dd/MM/yyyy" isBlankWhenNull="true">
+				<reportElement x="160" y="50" width="130" height="10" uuid="f5038e40-03aa-446c-a219-8fa118a4b55e"/>
+				<textElement>
+					<font fontName="DejaVu Sans" size="8" isItalic="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA["Hasta Comerical: " + $P{HastaComercial}]]></textFieldExpression>
+			</textField>
+		</band>
+	</pageHeader>
+	<detail>
+		<band height="75" splitType="Stretch">
+			<property name="com.jaspersoft.studio.unit.height" value="px"/>
+			<textField>
+				<reportElement x="130" y="0" width="40" height="12" uuid="24b57ad4-b4eb-4bc4-abe8-d083b37537d8"/>
+				<textElement>
+					<font fontName="DejaVu Sans" size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{numeroFacturas}]]></textFieldExpression>
+			</textField>
+			<textField pattern="#,##0.00;#,-##0.00">
+				<reportElement x="300" y="-1" width="53" height="12" uuid="b6860223-4ad3-4e7a-8791-8fe9d49e0c6c">
+					<property name="com.jaspersoft.studio.unit.y" value="px"/>
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
+				<textElement textAlignment="Right">
+					<font fontName="DejaVu Sans" size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{Servicios}]]></textFieldExpression>
+			</textField>
+			<textField pattern="#,##0.00;#,##0.00-">
+				<reportElement x="360" y="-1" width="56" height="12" uuid="3df2eab1-0af7-4587-a4ac-da189e3d9ba2">
+					<property name="com.jaspersoft.studio.unit.y" value="px"/>
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
+				<textElement textAlignment="Right">
+					<font fontName="DejaVu Sans" size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{Resto}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="0" y="0" width="120" height="12" uuid="83a25a39-d44b-43c8-9a81-ae70a0d3b69a"/>
+				<textElement>
+					<font fontName="DejaVu Sans" size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA["+ " + $F{nombreComercial}]]></textFieldExpression>
+				<hyperlinkReferenceExpression><![CDATA["http://localhost:8080/informe/detalle"
++ "?id_comercial=" + $F{id_comercial}
++ "&nombre=" + URLEncoder.encode($F{nombreComercial}, "UTF-8")
++ "&desde=" + $P{DesdeFecha}
++ "&hasta=" + $P{HastaFecha}
+
+]]></hyperlinkReferenceExpression>
+				<hyperlinkParameter name="DesdeFecha">
+					<hyperlinkParameterExpression><![CDATA[$P{DesdeFecha}]]></hyperlinkParameterExpression>
+				</hyperlinkParameter>
+				<hyperlinkParameter name="HastaFecha">
+					<hyperlinkParameterExpression><![CDATA[$P{HastaFecha}]]></hyperlinkParameterExpression>
+				</hyperlinkParameter>
+				<hyperlinkParameter name="IdComercial">
+					<hyperlinkParameterExpression><![CDATA[$F{id_comercial}]]></hyperlinkParameterExpression>
+				</hyperlinkParameter>
+				<hyperlinkParameter name="_report">
+					<hyperlinkParameterExpression><![CDATA["/listados/DetalleVentaxTipo"]]></hyperlinkParameterExpression>
+				</hyperlinkParameter>
+			</textField>
+			<textField pattern="#,##0.00;#,-##0.00">
+				<reportElement x="429" y="-1" width="65" height="12" uuid="a1ea0ae2-5309-4a2f-9341-42faa94ff695">
+					<property name="com.jaspersoft.studio.unit.y" value="px"/>
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
+				<textElement textAlignment="Right">
+					<font fontName="DejaVu Sans" size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{Total}]]></textFieldExpression>
+			</textField>
+			<subreport>
+				<reportElement x="0" y="50" width="555" height="18" uuid="9db1dd3b-5d44-4ab1-9fa1-a3d60e6be192"/>
+				<subreportParameter name="DesdeFecha">
+					<subreportParameterExpression><![CDATA[$P{DesdeFecha}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="HastaFecha">
+					<subreportParameterExpression><![CDATA[$P{HastaFecha}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="IdComercial">
+					<subreportParameterExpression><![CDATA[$F{id_comercial}]]></subreportParameterExpression>
+				</subreportParameter>
+				<connectionExpression><![CDATA[$P{REPORT_CONNECTION}]]></connectionExpression>
+				<subreportExpression><![CDATA["listados/DetalleVentaxPedido.jasper"]]></subreportExpression>
+			</subreport>
+		</band>
+	</detail>
+	<pageFooter>
+		<band height="25" splitType="Stretch">
+			<line>
+				<reportElement x="0" y="4" width="555" height="1" uuid="5cecbde8-5b8a-4a59-a002-6558fa8afb9a"/>
+			</line>
+			<textField>
+				<reportElement x="455" y="5" width="100" height="19" uuid="55bf237b-fd16-49c2-b73b-6715f2bcff96">
+					<property name="com.jaspersoft.studio.element.name" value="Pagina"/>
+				</reportElement>
+				<textElement textAlignment="Right">
+					<font fontName="DejaVu Sans" size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA["Página:" +  $V{PAGE_NUMBER}]]></textFieldExpression>
+			</textField>
+			<textField pattern="dd/MM/yyyy">
+				<reportElement x="0" y="5" width="100" height="19" uuid="ac24781b-1634-41ab-921a-6f13f623e476"/>
+				<textFieldExpression><![CDATA[new java.util.Date()]]></textFieldExpression>
+			</textField>
+		</band>
+	</pageFooter>
+	<summary>
+		<band height="39" splitType="Stretch">
+			<staticText>
+				<reportElement x="240" y="10" width="100" height="13" uuid="a53e44c2-e14a-4964-82aa-837867fa5ff7"/>
+				<textElement>
+					<font fontName="DejaVu Sans" size="8" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Totales Informe ... :]]></text>
+			</staticText>
+			<line>
+				<reportElement x="234" y="7" width="321" height="1" uuid="07578b84-1215-425c-aeb3-0d4d79aa2f59"/>
+			</line>
+		</band>
+	</summary>
+</jasperReport>

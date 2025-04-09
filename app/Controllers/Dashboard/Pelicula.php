@@ -3,14 +3,12 @@
 namespace App\Controllers\Dashboard;
 use App\Controllers\BaseController;
 use App\Models\CategoriaModel;
+use App\Models\EtiquetaModel;
+use App\Models\PeliculaEtiquetaModel;
 use App\Models\PeliculaModel;
 
 class Pelicula extends BaseController
 {
-
-    public function test($id){
-        echo 'hola'.' '.$id;
-    }
 
     public function index()
     {
@@ -21,6 +19,51 @@ class Pelicula extends BaseController
         ];
 
         return view('/dashboard/pelicula/index', $data);
+    }
+
+    public function etiquetas($id){
+        $categoriaModel = new CategoriaModel();
+        $etiquetaModel = new EtiquetaModel();
+        $peliculaModel = new PeliculaModel();
+
+        $etiquetas = [];
+
+        if ($this->request->getGet("categoria_id")) {
+            $etiquetas = $etiquetaModel
+            ->where('categoria_id', $this->request->getGet('categoria_id'))
+            ->findAll();
+        }
+
+        echo view('dashboard/pelicula/etiquetas',[
+            'pelicula' => $peliculaModel->find($id),
+            'categorias' => $categoriaModel->findAll(),
+            'etiquetas' => $etiquetas,
+        ]);
+    }
+
+    public function etiquetas_post($id){
+        $peliculaEtiquetaModel = new PeliculaEtiquetaModel();
+
+        $etiquetaId = $this->request->getPost('etiqueta_id');
+        $peliculaId = $id;
+
+        $peliculaEtiqueta = $peliculaEtiquetaModel->where('etiqueta_id', $etiquetaId)->where('pelicula_id', $peliculaId)->first();
+
+        if(!$peliculaEtiqueta){
+            $peliculaEtiquetaModel->insert([
+                'pelicula_id' => $peliculaId,
+                'etiqueta_id' => $etiquetaId,
+            ]);
+        }
+        return redirect()->back();
+    }
+
+    public function etiqueta_delete($id, $etiquetaId){
+        $peliculaEtiqueta = new PeliculaEtiquetaModel();
+        $peliculaEtiqueta->where('etiqueta_id', $etiquetaId)
+            ->where('pelicula_id', $id)->delete();
+
+        return redirect()->back()->with('mensaje', 'Etiqueta eliminada');
     }
 
     public function new(){
@@ -61,6 +104,7 @@ class Pelicula extends BaseController
         return view('dashboard/pelicula/show',[
             'pelicula' => $peliculaModel->find($id),
             'imagenes' => $peliculaModel->getImagenById($id),
+            'etiquetas'=> $peliculaModel->getEtiquetasById($id),
         ]);
     }
 

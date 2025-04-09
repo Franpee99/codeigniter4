@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Created with Jaspersoft Studio version 6.8.0.final using JasperReports Library version 6.8.0-2ed8dfabb690ff337a5797129f2cd92902b0c87b  -->
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="DetalleVentaxPedido2" pageWidth="595" pageHeight="842" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="0" bottomMargin="0" uuid="a396c793-90d3-44fb-a5da-1746497c5e24">
+	<property name="com.jaspersoft.studio.data.sql.SQLQueryDesigner.sash.w1" value="234"/>
+	<property name="com.jaspersoft.studio.data.sql.SQLQueryDesigner.sash.w2" value="755"/>
+	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="facturaDataBase"/>
+	<property name="com.jaspersoft.studio.data.sql.tables" value=""/>
+	<property name="com.jaspersoft.studio.unit." value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.pageHeight" value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.pageWidth" value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.topMargin" value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.bottomMargin" value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.leftMargin" value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.rightMargin" value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.columnWidth" value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.columnSpacing" value="pixel"/>
+	<parameter name="DesdeFecha" class="java.lang.String"/>
+	<parameter name="HastaFecha" class="java.lang.String"/>
+	<parameter name="IdComercial" class="java.lang.Integer"/>
+	<queryString language="SQL">
+		<![CDATA[Select I.bill_date, I.serie, I.numero, I.client_id, C.company_name,
+       SUM(CASE WHEN A.control_stock = 'services' THEN (M.quantity * (M.rate*( 1 - (M.dto /100)))) ELSE 0 END) As Servicios, 
+       SUM(CASE WHEN A.control_stock <> 'services' THEN (M.quantity * (M.rate*( 1 - (M.dto /100)))) ELSE 0 END) As Resto 
+From esi_invoices I, esi_invoice_items M, esi_clients C, esi_items A
+Where I.bill_date BETWEEN  $P{DesdeFecha}  AND $P{HastaFecha}  AND
+      I.deleted <> 1 AND 
+      I.invoice_type = 0 AND
+      I.assigned_to =  $P{IdComercial}  AND
+      C.id = I.client_id AND
+      M.invoice_id = I.id AND
+      M.item_type = '0' AND
+      M.deleted <> 1 AND
+      A.id = M.item_id 
+Group By  I.bill_date, I.serie, I.numero, I.client_id, C.company_name     
+Order by I.bill_date, I.serie, I.numero]]>
+	</queryString>
+	<field name="bill_date" class="java.sql.Date">
+		<property name="com.jaspersoft.studio.field.label" value="bill_date"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="esi_invoices"/>
+	</field>
+	<field name="serie" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="serie"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="esi_invoices"/>
+	</field>
+	<field name="numero" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="numero"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="esi_invoices"/>
+	</field>
+	<field name="client_id" class="java.lang.Integer">
+		<property name="com.jaspersoft.studio.field.label" value="client_id"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="esi_invoices"/>
+	</field>
+	<field name="company_name" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="company_name"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="esi_clients"/>
+	</field>
+	<field name="Servicios" class="java.lang.Double">
+		<property name="com.jaspersoft.studio.field.label" value="Servicios"/>
+	</field>
+	<field name="Resto" class="java.lang.Double">
+		<property name="com.jaspersoft.studio.field.label" value="Resto"/>
+	</field>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<detail>
+		<band height="10" splitType="Stretch">
+			<textField>
+				<reportElement x="0" y="0" width="100" height="10" uuid="e3c8a70b-49a7-40bb-918f-d97a733210a8"/>
+				<textElement>
+					<font size="7"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{numero}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="100" y="0" width="100" height="10" uuid="f23acc0e-674e-4d33-a100-3a659851dda2"/>
+				<textElement>
+					<font size="7"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{serie}]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+</jasperReport>

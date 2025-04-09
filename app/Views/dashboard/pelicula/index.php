@@ -28,6 +28,8 @@
                 <td>
                     <a href="/dashboard/pelicula/show/<?= $pelicula->id ?>">show</a>
                     <a href="/dashboard/pelicula/edit/<?= $pelicula->id ?>">Editar</a>
+                    <a href="/dashboard/pelicula/etiquetas/<?= $pelicula->id ?>">Tag</a>
+
                     <form class="form-eliminar" data-id="<?= $pelicula->id ?>" method="post">
                         <button type="submit">Eliminar</button>
                     </form>

@@ -8,6 +8,8 @@ use Config\Services;
  * @var RouteCollection $routes
  */
 
+
+$routes->get('informe/detalle', 'Informe::detalle');
 $routes = Services::routes();
 $routes->setAutoRoute(true);
 
